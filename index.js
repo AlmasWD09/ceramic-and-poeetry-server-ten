@@ -7,8 +7,12 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1kmrgvs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
+// middleware
+app.use(cors())
+app.use(express.json())
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1kmrgvs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -21,17 +25,20 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // await client.connect();
-    const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
     
     // ===============  =================
 
-    // app.get('/', (req, res) => {
-    //   res.send('GET request to the homepage')
-    // })
+    app.get('/categories',async(req,res)=>{
+      const dataBase = ceramicesPotteryCollection.find();
+      const result = await dataBase.toArray();
+      res.send(result) 
+    })
 
 
-    app.post('/', (req, res) => {
-      res.send('POST request to the homepage')
+    app.post('/categories', async (req, res) => {
+      const newCategory = req.body
+      const result = await ceramicesPotteryCollection.insertOne(newCategory)
+      res.send(result)
     })
     // ===============  =================
 
@@ -39,6 +46,12 @@ async function run() {
 
     // =============== user related api part end ===================
 
+
+
+
+
+
+    const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
