@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 const port = process.env.PORT || 5000
 
 
@@ -25,33 +25,46 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // await client.connect();
-    
-    // ===============  =================
+    const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
+    const sliderCollection = client.db("ceramicPotteryDB").collection('sliders');
 
+    
+    // ========== slider releate api part start ============
+    app.get('/sliders',async(req,res)=>{
+      const sliderData = sliderCollection.find();
+      const result = await sliderData.toArray();
+      res.send(result) 
+    })
+    // ========== slider releate api part end ==============
+
+
+
+    // =============== ceramices and pottery related api part start =================
     app.get('/categories',async(req,res)=>{
       const dataBase = ceramicesPotteryCollection.find();
       const result = await dataBase.toArray();
       res.send(result) 
     })
-
+    
+    app.get('/categories/:id', async(req,res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await ceramicesPotteryCollection.findOne(query)
+      res.send(result)
+      console.log(result);
+    })
 
     app.post('/categories', async (req, res) => {
       const newCategory = req.body
       const result = await ceramicesPotteryCollection.insertOne(newCategory)
       res.send(result)
     })
-    // ===============  =================
+    // =============== ceramices and pottery related api part end =================
 
     // =============== user related api part start =================
 
     // =============== user related api part end ===================
 
-
-
-
-
-
-    const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
