@@ -27,6 +27,7 @@ async function run() {
     // await client.connect();
     const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
     const sliderCollection = client.db("ceramicPotteryDB").collection('sliders');
+    const artistPotteryCollection = client.db("ceramicPotteryDB").collection('artistPottery');
 
     
     // ========== slider releate api part start ============
@@ -46,6 +47,14 @@ async function run() {
       res.send(result) 
     })
     
+    app.get('/categories/:email',async(req,res)=>{
+      const userEmail = req.params.email
+      const dataBase = ceramicesPotteryCollection.find()
+      const result = await dataBase.toArray(userEmail)
+      res.send(result)
+      // console.log(result);
+    })
+
     app.get('/categories/:id', async(req,res)=>{
       const id = req.params.id
       const query = {_id: new ObjectId(id)}
@@ -59,7 +68,35 @@ async function run() {
       const result = await ceramicesPotteryCollection.insertOne(newCategory)
       res.send(result)
     })
+
+    app.delete('/categories/:id',async(req,res)=>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await ceramicesPotteryCollection.deleteOne(query)
+      res.send(result)
+    })
     // =============== ceramices and pottery related api part end =================
+
+
+
+
+
+
+
+
+
+
+
+    // =============== artistPottery related api part start =================
+    app.get('/airtistPottery',async(req,res)=>{
+      const airtistPotteryData = artistPotteryCollection.find();
+      const result = await airtistPotteryData.toArray();
+      res.send(result) 
+    })
+
+    // =============== artistPottery related api end ========================
+
+
 
     // =============== user related api part start =================
 
