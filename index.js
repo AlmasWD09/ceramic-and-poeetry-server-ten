@@ -82,7 +82,7 @@ async function run() {
 
     // {name,stockStatus,price,rating,customization,time,userName,userEmail,selectedCategory,description,photo}
 
-    app.put('categories/:id',async(req,res)=>{
+    app.put('/categories/:id',async(req,res)=>{
      const id = req.params.id
      const updateCategory = req.body
 
@@ -118,6 +118,7 @@ async function run() {
     })
 
     app.get('/subCategories/category/:subcategory',async(req,res)=>{
+      
       const id = req.params.subcategory
       const subCategorieData = subCategoryCollection.find({subCategories:id});
       const result = await subCategorieData.toArray();
@@ -144,7 +145,7 @@ async function run() {
 
     // =============== artistPottery related api end ========================
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
