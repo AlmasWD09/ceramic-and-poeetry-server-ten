@@ -128,12 +128,6 @@ async function run() {
 
 
 
-
-
-
-
-
-
     // =============== artistPottery related api part start =================
     app.get('/airtistPottery',async(req,res)=>{
       const airtistPotteryData = artistPotteryCollection.find();
