@@ -48,7 +48,10 @@ async function run() {
       res.send(result) 
     })
     
-    app.get('/categories/:email',async(req,res)=>{
+
+    // app.get('/categories/:email',async(req,res)=>{
+    // app.get('/categories/email/:email',async(req,res)=>{
+    app.get('/categories/email/:email',async(req,res)=>{
       const userEmail = req.params.email
       const dataBase = ceramicesPotteryCollection.find()
       const result = await dataBase.toArray(userEmail)
@@ -56,13 +59,13 @@ async function run() {
       // console.log(result);
     })
 
-    app.get('/categories/:id', async(req,res)=>{
-      const id = req.params.id
-      const query = {_id: new ObjectId(id)}
-      const result = await ceramicesPotteryCollection.findOne(query)
-      res.send(result)
-      console.log(result);
-    })
+   app.get('/categories/:id',async(req,res)=>{
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+    const result = await ceramicesPotteryCollection.findOne(query)
+    res.send(result)
+    // console.log(result);
+   })
 
     app.post('/categories', async (req, res) => {
       const newCategory = req.body
@@ -76,11 +79,47 @@ async function run() {
       const result = await ceramicesPotteryCollection.deleteOne(query)
       res.send(result)
     })
+
+    // {name,stockStatus,price,rating,customization,time,userName,userEmail,selectedCategory,description,photo}
+
+    app.put('categories/:id',async(req,res)=>{
+     const id = req.params.id
+     const updateCategory = req.body
+
+     const query = {_id: new ObjectId(id)}
+      const options = { upsert: true };
+      
+      const category = {
+        $set: {
+          name:updateCategory.name,
+          stockStatus:updateCategory.stockStatus,
+          price:updateCategory.price,
+          rating:updateCategory.rating,
+          customization:updateCategory.customization,
+          time:updateCategory.time,
+          userName:updateCategory.userName,
+          userEmail:updateCategory.userEmail,
+          selectedCategory:updateCategory.selectedCategory,
+          selectedCategory:updateCategory.name,
+          description:updateCategory.description,
+          photo:updateCategory.photo,
+        },
+      };
+      const result = await ceramicesPotteryCollection.updateOne(query,category,options)
+      res.send(result)
+    })
     // =============== ceramices and pottery related api part end =================
 
     // ================ subCategorie related api part start ======================
     app.get('/subCategories',async(req,res)=>{
       const subCategorieData = subCategoryCollection.find();
+      const result = await subCategorieData.toArray();
+      res.send(result)
+    })
+
+    app.get('/subCategories/category/:subcategory',async(req,res)=>{
+      const id = req.params.subcategory
+      const subCategorieData = subCategoryCollection.find({subCategories:id});
       const result = await subCategorieData.toArray();
       res.send(result)
     })
@@ -100,6 +139,8 @@ async function run() {
       const result = await airtistPotteryData.toArray();
       res.send(result) 
     })
+
+
 
     // =============== artistPottery related api end ========================
 
