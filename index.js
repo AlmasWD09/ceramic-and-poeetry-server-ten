@@ -28,6 +28,7 @@ async function run() {
     const ceramicesPotteryCollection = client.db("ceramicPotteryDB").collection('ceramicesPottery');
     const sliderCollection = client.db("ceramicPotteryDB").collection('sliders');
     const artistPotteryCollection = client.db("ceramicPotteryDB").collection('artistPottery');
+    const subCategoryCollection = client.db("ceramicPotteryDB").collection('subCategory');
 
     
     // ========== slider releate api part start ============
@@ -77,7 +78,13 @@ async function run() {
     })
     // =============== ceramices and pottery related api part end =================
 
-
+    // ================ subCategorie related api part start ======================
+    app.get('/subCategories',async(req,res)=>{
+      const subCategorieData = subCategoryCollection.find();
+      const result = await subCategorieData.toArray();
+      res.send(result)
+    })
+    // ================ subCategorie related api part end ========================
 
 
 
@@ -95,12 +102,6 @@ async function run() {
     })
 
     // =============== artistPottery related api end ========================
-
-
-
-    // =============== user related api part start =================
-
-    // =============== user related api part end ===================
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
