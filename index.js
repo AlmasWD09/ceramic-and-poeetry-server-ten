@@ -1,15 +1,30 @@
 
 const express = require('express')
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 const app = express()
 const cors = require('cors')
 require('dotenv').config()
-const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
+
 const port = process.env.PORT || 5000
 
 
 
 // middleware
+const corsOptions = {
+  origin: ['https://career-hube.web.app'],
+  credentials: true,
+  optionSuccessStatus: 200,
+}
 app.use(cors())
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*','no-cors')
+//   res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST')
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept'
+//   )
+//   next()
+// })
 app.use(express.json())
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1kmrgvs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -49,8 +64,7 @@ async function run() {
     })
     
 
-    // app.get('/categories/:email',async(req,res)=>{
-    // app.get('/categories/email/:email',async(req,res)=>{
+    
     app.get('/categories/email/:email',async(req,res)=>{
       const userEmail = req.params.email
       const dataBase = ceramicesPotteryCollection.find()
@@ -80,7 +94,7 @@ async function run() {
       res.send(result)
     })
 
-    // {name,stockStatus,price,rating,customization,time,userName,userEmail,selectedCategory,description,photo}
+ 
 
     app.put('/categories/:id',async(req,res)=>{
      const id = req.params.id
@@ -150,9 +164,6 @@ run().catch(console.dir);
 
 
 
-// middleware
-app.use(express.json())
-app.use(cors())
 
 
 
